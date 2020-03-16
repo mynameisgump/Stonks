@@ -54,33 +54,12 @@ async def on_message(message):
 
     if args[1] == "stock":
         CUR = "CAD"
-        ts = TimeSeries(key='YOUR_API_KEY', output_format='pandas')
-        data, meta_data = ts.get_intraday(symbol='MSFT',interval='1min', outputsize='full')
-        data = data.reset_index(drop=True)
-        print(data.head(2))
-        pd.Dataframe(index= pd.to_datetime,columns = lambda x : x.split(' ')[-1],inplace = True)
-        print(data.head(2))
-        data["4. close"].plot()
-        #data['4. close'].plot()
-        plt.title('Intraday Times Series for the MSFT stock (1 min)')
-        plt.show()
-
-pd.set_option('display.max_rows', None)
-pd.set_option('display.max_columns', None)
-print("Test")
-CUR = "CAD"
-ts = TimeSeries(key='YOUR_API_KEY', output_format='pandas')
-data, meta_data = ts.get_intraday(symbol='AMD',interval='1min', outputsize='full')
-print(data.head(2))
-#data.rename(index= pd.to_datetime,columns = lambda x : x.split(' ')[-1],inplace = True)
-data.rename(index= pd.to_datetime,columns = {"1. open":"Open","2. high":"High","3. low":"Low","4. close":"Close","5. volume":"Volume"},inplace = True)
-data = data.replace("",np.nan)
-data.index=pd.to_datetime(data.index)
-data.iloc[::-1]
-data.resample("1 min")
-print(data.head(60))
-mpf.plot(data,type ="line")
-data["4. close"].plot()
-plt.title('Intraday Times Series for the MSFT stock (1 min)')
-plt.show()
+        ts = TimeSeries(key=ALPHA_TOKEN, output_format='pandas')
+        data, meta_data = ts.get_intraday(symbol=args[2],interval='1min', outputsize='full')
+        data.rename(index= pd.to_datetime,columns = {"1. open":"Open","2. high":"High","3. low":"Low","4. close":"Close","5. volume":"Volume"},inplace = True)
+        data = data.replace("",np.nan)
+        data.index=pd.to_datetime(data.index)
+        data = data.iloc[::-1]
+        data.resample("1 min")
+        mpf.plot(data,type ="line")
 client.run(DISCORD_TOKEN)
