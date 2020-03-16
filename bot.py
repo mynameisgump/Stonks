@@ -43,14 +43,11 @@ async def on_message(message):
     if args[1] == "crypto":
         CUR = "CAD"
         cc = CryptoCurrencies(key=ALPHA_TOKEN, output_format='pandas')
-        data, meta_data = cc.get_digital_currency_daily(symbol='BTC', market='CNY')
-        data['4b. close (USD)'].plot()
-        plt.tight_layout()
-        plt.title('Daily close value for bitcoin (BTC)')
-        plt.grid()
-        plt.show()
-        plt.savefig('foo.png')
-        print("Finished plot creation")
+        data, meta_data = cc.get_digital_currency_daily(symbol=args[2], market='USD')
+        data.rename(index= pd.to_datetime,columns = {"1b. open (USD)":"Open","2b. high (USD)":"High","3b. low (USD)":"Low","4b. close (USD)":"Close","5. volume":"Volume"},inplace = True)
+        data = data.iloc[::-1]
+        mpf.plot(data,type="line",savefig="graph.png")
+        print("Finished crypto plot creation")
 
     if args[1] == "stock":
         CUR = "CAD"
@@ -61,5 +58,7 @@ async def on_message(message):
         data.index=pd.to_datetime(data.index)
         data = data.iloc[::-1]
         data.resample("1 min")
-        mpf.plot(data,type ="line")
+        mpf.plot(data,type="line",savefig="graph.png")
+        print("Finished stock plot creation")
+
 client.run(DISCORD_TOKEN)
