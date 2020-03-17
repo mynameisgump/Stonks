@@ -4,9 +4,7 @@ import discord
 import matplotlib.pyplot as plt
 import pandas as pd
 import datetime as dt
-
 import mplfinance as mpf
-    
 import numpy as np
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.cryptocurrencies import CryptoCurrencies
@@ -46,8 +44,9 @@ async def on_message(message):
         data, meta_data = cc.get_digital_currency_daily(symbol=args[2], market='USD')
         data.rename(index= pd.to_datetime,columns = {"1b. open (USD)":"Open","2b. high (USD)":"High","3b. low (USD)":"Low","4b. close (USD)":"Close","5. volume":"Volume"},inplace = True)
         data = data.iloc[::-1]
-        mpf.plot(data,type="line",savefig="graph.png")
+        mpf.plot(data,type="line",savefig="graph.png",title="Price chart for "+args[2])
         print("Finished crypto plot creation")
+        await message.channel.send(file=discord.File('graph.png'))
 
     if args[1] == "stock":
         CUR = "CAD"
@@ -58,7 +57,9 @@ async def on_message(message):
         data.index=pd.to_datetime(data.index)
         data = data.iloc[::-1]
         data.resample("1 min")
+        plt.title("Testing")
         mpf.plot(data,type="line",savefig="graph.png")
         print("Finished stock plot creation")
+        await message.channel.send(file=discord.File('graph.png'))
 
 client.run(DISCORD_TOKEN)
