@@ -55,8 +55,10 @@ async def on_message(message):
         
         if args[3] == "intraday":
             try:
-                data, meta_data = ts.get_intraday(symbol=args[2],interval='1min', outputsize='full')
-                print(data)
+                interval = '1min'
+                if len(args) > 4:
+                    interval = args[4]
+                data, meta_data = ts.get_intraday(symbol=args[2],interval=interval, outputsize='full')
                 data.rename(index= pd.to_datetime,columns = {"1. open":"Open","2. high":"High","3. low":"Low","4. close":"Close","5. volume":"Volume"},inplace = True)
                 data = data.replace("",np.nan)
                 data.index=pd.to_datetime(data.index)
@@ -66,17 +68,17 @@ async def on_message(message):
 
         if args[3] == "daily":
             try:
-                data, meta_data = ts.get_daily(symbol=args[2],outputsize='full')
-                print(data)
-                data.rename(index= pd.to_datetime,columns = {"1. open":"Open","2. high":"High","3. low":"Low","4. close":"Close","5. volume":"Volume"},inplace = True)
+                data, meta_data = ts.get_daily_adjusted(symbol=args[2],outputsize='full')
+                data.rename(index= pd.to_datetime,columns = {"1. open":"Open","2. high":"High","3. low":"Low","4. close":"Close","5. adjusted close":"Adj Close","6. volume":"Volume"},inplace = True)
                 data = data.replace("",np.nan)
                 data.index=pd.to_datetime(data.index)
                 data = data.iloc[::-1]
             except ValueError as err:
                 await message.channel.send("Invalid Ticker")
         
-        print(data)
-        mpf.plot(data,type="line",savefig="graph.png",title="Price chart for "+args[2])
+        data = data[data.index > dt.datetime.now() - pd.to_timedelta("8day")]
+
+        mpf.plot(data,savefig="graph.png",title="Price chart for "+args[2], style="yahoo")
         print("Finished stock plot creation")
 
         await message.channel.send(file=discord.File('graph.png'))
