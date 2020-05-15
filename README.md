@@ -17,3 +17,8 @@ Stonks$ crypto BTC
 would generate:
 
 ![BTC Graph](https://media.discordapp.net/attachments/688110160010412058/689267758453489714/graph.png?width=586&height=421)
+
+```
+Stonks$ IBM intraday 1min
+```
+![IBM Graph](https://cdn.discordapp.com/attachments/688110160010412058/710838357634318406/graph.png)
