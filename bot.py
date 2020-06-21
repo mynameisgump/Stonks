@@ -20,6 +20,8 @@ ALPHA_TOKEN = os.getenv('ALPHA_TOKEN')
 PREFIX = "Stonks$"
 
 client = discord.Client()
+cc = CryptoCurrencies(key=ALPHA_TOKEN, output_format='pandas')
+ts = TimeSeries(key=ALPHA_TOKEN, output_format='pandas')
 
 @client.event
 async def on_ready():
@@ -41,7 +43,7 @@ async def on_message(message):
     #Stonks$ {crypto/stock} {ticker} {date}
     if args[1] == "crypto":
         CUR = "CAD"
-        cc = CryptoCurrencies(key=ALPHA_TOKEN, output_format='pandas')
+        #cc = CryptoCurrencies(key=ALPHA_TOKEN, output_format='pandas')
         data, meta_data = cc.get_digital_currency_daily(symbol=args[2], market='USD')
         data.rename(index= pd.to_datetime,columns = {"1b. open (USD)":"Open","2b. high (USD)":"High","3b. low (USD)":"Low","4b. close (USD)":"Close","5. volume":"Volume"},inplace = True)
         data = data.iloc[::-1]
@@ -51,7 +53,7 @@ async def on_message(message):
 
     if args[1] == "stock":
         CUR = "CAD"
-        ts = TimeSeries(key=ALPHA_TOKEN, output_format='pandas')
+        #ts = TimeSeries(key=ALPHA_TOKEN, output_format='pandas')
         
         if args[3] == "intraday":
             try:
